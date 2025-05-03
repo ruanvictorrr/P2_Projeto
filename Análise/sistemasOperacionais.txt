@@ -1,0 +1,3 @@
+Linux: 53670
+Windows: 519487
+macOS: 24842
