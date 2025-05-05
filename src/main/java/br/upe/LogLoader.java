@@ -13,13 +13,13 @@ public class LogLoader {
         return Files.readAllLines(caminho);
     }
 
-    // Carrega arquivo de um caminho absoluto ou informado pelo usuário
+    
     public List<String> carregarViaCaminho(String caminhoCompleto) throws IOException {
         Path caminho = Paths.get(caminhoCompleto);
         return Files.readAllLines(caminho);
     }
 
-    // Carrega arquivo da pasta resources (dentro de src/main/resources)
+    // Carrega arquivo da pasta resources 
     public List<String> carregarViaResources(String nomeArquivo) throws IOException {
         InputStream input = getClass().getClassLoader().getResourceAsStream(nomeArquivo);
         if (input == null) {
