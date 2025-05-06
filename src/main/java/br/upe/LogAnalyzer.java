@@ -81,54 +81,59 @@ public class LogAnalyzer {
     public void gerarNaoRespondidosNovembro() {
         try {
             Files.createDirectories(Paths.get("Análise"));
-
+    
             List<String> filtrados = linhas.stream()
-                .filter(l -> l.contains("/Nov/2021") && l.contains(" 404 "))
+                .filter(l -> l.contains("/Nov/2021") && l.matches(".*\\s4\\d{2}\\s.*"))
                 .toList();
-
+    
             Path saida = Paths.get("Análise/naoRespondidosNovembro.txt");
             Files.write(saida, filtrados);
             System.out.println("Relatório salvo em: " + saida.toAbsolutePath());
-
+    
         } catch (IOException e) {
             System.err.println("Erro: " + e.getMessage());
         }
     }
+    
 
     public void gerarResumoSistemasOperacionais() {
         try {
             Files.createDirectories(Paths.get("Análise"));
             Map<String, Long> contagem = new HashMap<>();
-
+    
             for (String linha : linhas) {
                 if (!linha.contains("/2021")) continue;
-
+    
                 String sistema = identificarSistemaOperacional(linha.toLowerCase());
                 if (sistema != null) {
                     contagem.put(sistema, contagem.getOrDefault(sistema, 0L) + 1);
                 }
             }
-
+    
             List<String> resultado = contagem.entrySet().stream()
                 .sorted(Map.Entry.comparingByKey())
                 .map(e -> e.getKey() + ": " + e.getValue())
                 .toList();
-
+    
             Path saida = Paths.get("Análise/sistemasOperacionais.txt");
             Files.write(saida, resultado);
             System.out.println("Relatório salvo em: " + saida.toAbsolutePath());
-
+    
         } catch (IOException e) {
             System.err.println("Erro ao salvar arquivo: " + e.getMessage());
         }
     }
-
+    
     private String identificarSistemaOperacional(String linha) {
+        if (linha.contains("android") || linha.contains("mobile")) return "Mobile";
         if (linha.contains("windows")) return "Windows";
-        if (linha.contains("linux")) return "Linux";
         if (linha.contains("mac os") || linha.contains("macintosh") || linha.contains("darwin")) return "macOS";
+        if (linha.contains("ubuntu")) return "Ubuntu";
+        if (linha.contains("fedora")) return "Fedora";
+        if (linha.contains("x11")) return "Linux (outros)";
         return null;
     }
+    
 
     public void gerarMediaPOST2021() {
         try {
